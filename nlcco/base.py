@@ -6,7 +6,7 @@ Created on Tue Apr 28 16:08:44 2020
 @author: pauldufosse
 
 TODO:
-    - better handle of bounds for only lower or upper.
+    - better handle of bounds for only lower or upper
 """
 import os, sys
 import numpy as np
