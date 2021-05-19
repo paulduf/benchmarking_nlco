@@ -11,15 +11,16 @@ TODO:
 import os, sys
 import numpy as np
 
+
 class ConstrainedTestProblem:
     """
     Base class for Constrained Test Problem
-    
+
     Keyword arguments:
         - seed: fix a random seed, e.g. to sample starting point
-        - eps_feas: add (nonnegative) epsilon to inequality constraints to 
+        - eps_feas: add (nonnegative) epsilon to inequality constraints to
         enforce strictly feasible solutions
-        
+
     To be inherited
     """
 
@@ -37,15 +38,15 @@ class ConstrainedTestProblem:
     @property
     def is_ineq(self):
         raise NotImplementedError
-    
+
     @property
     def dim(self):
         raise NotImplementedError
-    
+
     @property
     def m(self):
         return len(self.is_ineq)
-    
+
     @property
     def bounds(self):
         return None
@@ -53,7 +54,7 @@ class ConstrainedTestProblem:
     def __call__(self, x, add_bounds=False,):
         f_ = self.f(x)
         g_ = self.g(x)
-        g_ += self.eps_feas * np.asarray(self.is_ineq) # converts to np.array
+        g_ += self.eps_feas * np.asarray(self.is_ineq)  # converts to np.array
         if add_bounds:
             g_b_ = self.g_bounds(x) + self.eps_feas
             g_ = np.concatenate((g_, g_b_))
@@ -89,7 +90,8 @@ class ConstrainedTestProblem:
 class RestrictedCP:
     """
     Restricted Constrained Problem
-    Encapsulates a constrained problem, overwrites the constraint function, returns only positive values
+    Encapsulates a constrained problem, overwrites the constraint function,
+    returns only positive values
     """
 
     def __init__(self, problem):
@@ -135,11 +137,10 @@ def epstolrel(fsucc, fmin, f0):
 def feasibility_ratio(x_seq, g):
     """
     Feasibility ratio of incumbent solution over time
-    
+
     x_seq: sequence of incumbent
     g: multivariate, multivalued constraint function
     """
-    
     g_seq = np.asarray([g(x) for x in x_seq])
     feas_ratio = np.sum(g_seq > 0, axis=1)
     return feas_ratio
