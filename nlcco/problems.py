@@ -6,7 +6,7 @@ Created on Tue Apr 28 16:08:44 2020
 @author: pauldufosse
 
 Guidelines:
-    - if f, g can be made static then they should be 
+    - if f, g can be made static then they should be
     (one may not want to instantiate a problem but only access f, g)
 
 Particularities for each problem that are relevant for coding
@@ -19,8 +19,8 @@ Warning:
 # NB: f and g are static method
 from .base import ConstrainedTestProblem
 import numpy as np
-
 # Nonlinear test problems from litterature
+
 
 class G1(ConstrainedTestProblem):
     """
@@ -28,7 +28,7 @@ class G1(ConstrainedTestProblem):
     >>> G1.f(G1.xopt)
     -15
     """
-    
+
     is_ineq = [True] * 9
     bounds = np.asarray([[0, 1]] * 9 + [[0, 100]] * 3 + [[0, 1]]).T
     dim = 13
@@ -73,8 +73,7 @@ class G2(ConstrainedTestProblem):
             0.45683664767217, 0.45245876903267, 0.44826762241853,
             0.44424700958760, 0.44038285956317)
     fmin = -0.80361910412559
-    
-        
+
     @staticmethod
     def f(x):
         x = np.asarray(x)
@@ -82,12 +81,12 @@ class G2(ConstrainedTestProblem):
         top = sum(v**4) - 2 * np.prod(v**2)
         bottom = np.sqrt(sum(np.multiply(np.arange(1, len(x) + 1), x**2)))
         return - np.abs(top / bottom)
-    
+
     @staticmethod
     def g(x):
         g_ = []
         g_.append(0.75 - np.prod(x))
-        g_.append(sum(x) - 7.5 * len(x)) # do not use self.dim to keep this static ?
+        g_.append(sum(x) - 7.5 * len(x))  # do not use self.dim to keep this static ?
         return np.asarray(g_)
 
 
@@ -100,7 +99,7 @@ class G3(ConstrainedTestProblem):
     >>> G3.get_xopt(4)
     array([0.5, 0.5, 0.5, 0.5])
     """
-    
+
     is_ineq = [False]
     dim = 10
     bounds = np.asarray([[0, 1]] * 10).T
@@ -124,7 +123,7 @@ class G3(ConstrainedTestProblem):
     def get_xopt(dim):
         return np.asarray([1 / np.sqrt(dim)] * dim)
 
-    
+
 class G4(ConstrainedTestProblem):
     """
     >>> G4.f(G4.x_start)
@@ -140,7 +139,8 @@ class G4(ConstrainedTestProblem):
     dim = 5
     xopt = (78, 33, 29.9952560256815985, 45, 36.7758129057882073)
     fmin = -30665.53867178332
-    x_start = [100] + [40]*4
+    # x_start = [100] + [40]*4
+    x_start = [84.43354895, 35.38278701, 36.13200712, 30.23869719, 34.39626657]
 
     @staticmethod
     def f(x):
@@ -159,18 +159,18 @@ class G5(ConstrainedTestProblem):
     >>> G5.f((679.9453, 1026.067, 0.1188764, 0.3962336))
     5126.497478059328
     """
-     
+
     is_ineq = [True] * 2 + [False] * 3
     bounds = np.asarray([[0, 1200]] * 2 + [[-0.55, 0.55]] * 2).T
     dim = 4
     xopt = (679.945148297028709, 1026.06697600004691, 0.118876369094410433,
             -0.39623348521517826)
     fmin = 5126.4967140071
-    
+
     @staticmethod
     def f(x):
         return 3 * x[0] + 1e-6 * x[0]**3 + 2 * x[1] + 2e-6 / 3 * x[1]**3
-    
+
     @staticmethod
     def g(x):
         g_ = []
@@ -191,7 +191,8 @@ class G6(ConstrainedTestProblem):
     is_ineq = [True] * 2
     bounds = np.asarray([[13, 100], [0, 100]]).T
     dim = 2
-    x_start = [20.1, 5.84]
+    # x_start = [20.1, 5.84]
+    x_start = [15.00786951,  4.82698135]
     xopt = (14.09500000000000064, 0.8429607892154795668)
     fmin = -6961.81387558015
 
@@ -201,7 +202,7 @@ class G6(ConstrainedTestProblem):
 
     @staticmethod
     def g(x):
-        return [- (x[0] - 5)**2 - (x[1] - 5)**2 + 100, 
+        return [- (x[0] - 5)**2 - (x[1] - 5)**2 + 100,
                 (x[0] - 6)**2 + (x[1] - 5)**2 - 82.81]
 
 
@@ -213,15 +214,18 @@ class G7(ConstrainedTestProblem):
 
     is_ineq = [True] * 8
     bounds = np.asarray([[-10, 10]] * 10).T
-    xopt = (2.17199634142692, 2.3636830416034, 8.77392573913157, 5.09598443745173, 
+    xopt = (2.17199634142692, 2.3636830416034, 8.77392573913157, 5.09598443745173,
             0.990654756560493, 1.43057392853463, 1.32164415364306,
             9.82872576524495, 8.2800915887356, 8.3759266477347)
     fmin = 24.30620906818
     dim = 10
 
+    x_start = [1.64690245, 1.16330762, 5.43411993, -5.02528697, 0.01454337,
+               7.21470295, 4.22095871, -9.23249123, 6.56336066, 7.94895246]
+
     @staticmethod
     def f(x):
-        v = x[0]**2 + x[1]**2 + x[0]*x[1] - 14*x[0] - 16*x[1] 
+        v = x[0]**2 + x[1]**2 + x[0]*x[1] - 14*x[0] - 16*x[1]
         v += (x[2] - 10)**2
         v += 4 * (x[3] - 5)**2
         v += (x[4] - 3)**2
@@ -258,7 +262,7 @@ class G8(ConstrainedTestProblem):
     @staticmethod
     def f(x):
         v = np.sin(2 * np.pi * x[0])**3 * np.sin(2 * np.pi * x[1])
-        v /= x[0]**3 * (sum(x)) 
+        v /= x[0]**3 * (sum(x))
         return -v
 
     @staticmethod
@@ -274,15 +278,17 @@ class G9(ConstrainedTestProblem):
     >>> G9.f((2.330499, 1.951372, -0.4775414, 4.365726, -0.624487, 1.038131, 1.594227))
     680.6301112407558
     """
-   
+
     is_ineq = [True] * 4
-    bounds = np.asarray([[-10, 10]]  * 7).T
+    bounds = np.asarray([[-10, 10]] * 7).T
     xopt = (2.33049935147405174, 1.95137236847114592, -0.477541399510615805,
             4.36572624923625874, -0.624486959100388983, 1.03813099410962173,
             1.5942266780671519)
     fmin = 680.630057374402
     dim = 7
-  
+    x_start = [-1.41024198, -1.19310644, -0.4201322, -1.52117309, -3.07758015,
+               -4.31294726, -1.46306648]
+
     @staticmethod
     def f(x):
         v = (x[0] - 10)**2
@@ -315,12 +321,15 @@ class G10(ConstrainedTestProblem):
 
     is_ineq = [True] * 6
     bounds = np.asarray([[1e2, 1e4]] + [[1e3, 1e4]] * 2 + [[1e1, 1e3]] * 5).T
-    xopt = (579.306685017979589, 1359.97067807935605, 5109.97065743133317, 
+    xopt = (579.306685017979589, 1359.97067807935605, 5109.97065743133317,
             182.01769963061534, 295.601173702746792, 217.982300369384632,
             286.41652592786852, 395.601173702746735)
-    x_start = [6881.97594858, 1352.20925325, 9699.06535149,  636.413402 ,304.48287295,  979.73387336,  846.3647499 ,  693.43198988]
+    # x_start = [6881.97594858, 1352.20925325, 9699.06535149, 636.413402,
+    #           304.48287295, 979.73387336, 846.3647499, 693.43198988]
     fmin = 7049.24802052867
     dim = 8
+    x_start = [778.87460348, 9362.67623381, 3501.73932366, 148.63262176,
+               363.89785583, 227.64576493, 183.40051194, 461.9888433]
 
     @staticmethod
     def f(x):
@@ -343,13 +352,13 @@ class G11(ConstrainedTestProblem):
     >>> G11.f((0.70711, 0.5))
     0.7500045521
     """
-    
+
     is_ineq = [False]
     bounds = np.asarray([[-1, 1]] * 2).T
     xopt = (-0.707036070037170616, 0.500000004333606807)
     fmin = 0.7499
     dim = 2
-    
+
     @staticmethod
     def f(x):
         return x[0]**2 + (x[1] - 1)**2
@@ -357,7 +366,7 @@ class G11(ConstrainedTestProblem):
     @staticmethod
     def g(x):
         return np.asarray([x[1] - x[0]**2])
-    
+
 
 class G12(ConstrainedTestProblem):
     """
@@ -371,21 +380,21 @@ class G12(ConstrainedTestProblem):
     dim = 3
     fmin = -1
     xopt = [5] * 3
-    
+
     @staticmethod
     def f(x):
         x = np.asarray(x)
         return -(100 - sum((x - 5)**2)) / 100
-    
+
     @staticmethod
     def g(x):
         # check if equivalent: round to closest integer
         x_ = np.round(x)
         return np.asarray((x - x_)**2 - .0625)
-    
-    
+
+
 class G13(ConstrainedTestProblem):
-    
+
     is_ineq = [False] * 3
     bounds = np.asarray([[-2.3, 2.3]] * 2 + [[-3.2, 3.2]] * 3).T
     dim = 5
@@ -396,7 +405,7 @@ class G13(ConstrainedTestProblem):
     @staticmethod
     def f(x):
         return np.exp(np.prod(x))
-    
+
     @staticmethod
     def g(x):
         x = np.asarray(x)
@@ -405,14 +414,14 @@ class G13(ConstrainedTestProblem):
         g_.append(x[1] * x[2] - 5 * x[3] * x[4])
         g_.append(x[0]**3 + x[1]**3 + 1)
         return np.asarray(g_)
-    
+
 
 class G14(ConstrainedTestProblem):
     """
     >>> G14.f((0.0406684113216282, 0.147721240492452, 0.783205732104114, 0.00141433931889084, 0.485293636780388, 0.000693183051556082, 0.0274052040687766, 0.0179509660214818, 0.0373268186859717, 0.0968844604336845))
     -47.764888459491466
     """
-    
+
     is_ineq = [False] * 3
     bounds = np.asarray([[0, 10]] * 10)
     dim = 10
@@ -421,34 +430,35 @@ class G14(ConstrainedTestProblem):
             0.0274052040687766, 0.0179509660214818, 0.0373268186859717,
             0.0968844604336845)
     fmin = -47.7648884594915
-    
+
     @staticmethod
     def f(x):
         c = np.asarray([-6.089, -17.164, -34.054, -5.914, -24.721,
-         -14.986, -24.1, -10.708, -26.662, -22.179])
+                        -14.986, -24.1, -10.708, -26.662, -22.179])
         f_ = np.log(x)
         f_ -= np.log(sum(x))
         f_ += c
         return sum(np.multiply(x, f_))
-    
+
     @staticmethod
     def g(x):
         pass
-    
+
+
 class G15(ConstrainedTestProblem):
-    
+
     is_ineq = [False] * 2
     bounds = np.asarray([[0, 10]] * 3)
     dim = 3
     xopt = (3.51212812611795133, 0.216987510429556135, 3.55217854929179921)
     fmin = 961.715022289961
-    
+
     @staticmethod
     def f(x):
         x = np.asarray(x)
-        #return 1000 - sum(np.multiply([1, 2, 1], x**2)) - x[0] * x[1] - x[1] * x[2]
+        # return 1000 - sum(np.multiply([1, 2, 1], x**2)) - x[0] * x[1] - x[1] * x[2]
         return 1000 - x[0]**2 - 2 * x[1]**2 - x[2]**2 - x[0] * x[1] - x[1] * x[2]
-    
+
     @staticmethod
     def g(x):
         x = np.asarray(x)
@@ -466,15 +476,15 @@ class G16(ConstrainedTestProblem):
     >>> sum(G16.g(xopt) > 0)
     0
     """
-    
+
     dim = 5
     is_ineq = [True] * 38
-    bounds = np.array([[704.4148, 906.3855], [68.6, 288.88], [0, 134.75], 
+    bounds = np.array([[704.4148, 906.3855], [68.6, 288.88], [0, 134.75],
                        [193, 287.0966], [25, 84.1988]]).T
-    xopt = (705.174537070090537, 68.5999999999999943, 102.899999999999991, 
+    xopt = (705.174537070090537, 68.5999999999999943, 102.899999999999991,
             282.324931593660324, 37.5841164258054832)
     fmin = -1.90515525853479
- 
+
     @staticmethod
     def get_vals(x):
         y = np.zeros(17)
@@ -514,7 +524,7 @@ class G16(ConstrainedTestProblem):
         y[16] = 14130000 - 1328 * y[9] - 531 * y[10] + c[13] / c[11]
         c[16] = y[8] + x[4]
         return y, c
-  
+
     @classmethod
     def f(cls, x):
         y, c = cls.get_vals(x)
@@ -561,7 +571,7 @@ class G16(ConstrainedTestProblem):
         g_.append(y[10] - 1444.046)
         g_.append(18.766 - y[11])
         g_.append(y[11] - 537.141)
-        g_.append(1072.163 - y[12])# la
+        g_.append(1072.163 - y[12])  # la
         g_.append(y[12] - 3247.039)
         g_.append(8961.448 - y[13])
         g_.append(y[13] - 26844.086)
@@ -579,11 +589,11 @@ class G17(ConstrainedTestProblem):
     TODO: check
     ERRATUM: CEC def, x[0] < 400, should be <=, according to bounds
     """
-    
+
     dim = 6
     is_ineq = [False] * 4
-    bounds = np.asarray([[0, 400], [0, 1000]] + [[340, 420]] * 2  + [[-1000, 1000], [0, 0.5236]]).T
-    xopt = (201.784467214523659, 99.9999999999999005, 383.071034852773266, 
+    bounds = np.asarray([[0, 400], [0, 1000]] + [[340, 420]] * 2 + [[-1000, 1000], [0, 0.5236]]).T
+    xopt = (201.784467214523659, 99.9999999999999005, 383.071034852773266,
             420, -10.9076584514292652, 0.0731482312084287128)
     fmin = 8853.53967480648
 
@@ -600,7 +610,7 @@ class G17(ConstrainedTestProblem):
         elif 200 <= x[1] <= 1000:
             f2 = 30 * x[1]
         return f1 + f2
-    
+
     @staticmethod
     def g(x):
         g_ = []
@@ -617,8 +627,8 @@ class G18(ConstrainedTestProblem):
     is_ineq = [True] * 13
     bounds = np.asarray([[-10, 10]] * 8 + [[0, 20]])
     xopt = (-0.657776192427943163, -0.153418773482438542, 0.323413871675240938,
-             -0.946257611651304398, -0.657776194376798906, -0.753213434632691414,
-             0.323413874123576972, -0.346462947962331735, 0.59979466285217542)
+            -0.946257611651304398, -0.657776194376798906, -0.753213434632691414,
+            0.323413874123576972, -0.346462947962331735, 0.59979466285217542)
     fmin = -0.866025403784439
 
     @staticmethod
@@ -647,7 +657,7 @@ class G18(ConstrainedTestProblem):
         g_.append(x[4] * x[8])
         g_.append(x[5] * x[6] - x[4] * x[7])
         return np.asarray(g_)
-    
+
 
 class G19(ConstrainedTestProblem):
 
@@ -655,9 +665,9 @@ class G19(ConstrainedTestProblem):
     is_ineq = [True] * 5
     bounds = np.asarray([[0, 10]] * 15)
     # test this xopt
-    xopt = (0, 0, 3.94599045143233784, 0, 3.2831773458454161, 
-             10, 0, 0, 0, 0, 0.370764847417013987, 0.278456024942955571,
-             0.523838487672241171, 0.388620152510322781, 0.298156764974678579)
+    xopt = (0, 0, 3.94599045143233784, 0, 3.2831773458454161,
+            10, 0, 0, 0, 0, 0.370764847417013987, 0.278456024942955571,
+            0.523838487672241171, 0.388620152510322781, 0.298156764974678579)
     fmin = 32.6555929502463
 
     # problem data
@@ -681,7 +691,7 @@ class G19(ConstrainedTestProblem):
     c = np.asarray(c)
     d = np.array([4, 8, 10, 6, 2])
     e = np.array([-15, -27, -36, -18, - 12])
-    
+
     @classmethod
     def f(cls, x):
         x = np.asarray(x)
@@ -701,7 +711,7 @@ class G19(ConstrainedTestProblem):
 
 
 class G20(ConstrainedTestProblem):
-    """ The solution is a little infeasible and no feasible solution 
+    """ The solution is a little infeasible and no feasible solution
     has been found so far [cec2006]
     What is meant by a little?
     """
@@ -710,8 +720,8 @@ class G20(ConstrainedTestProblem):
     is_ineq = [True] * 6 + [False] * 14
     bounds = np.asarray([[0, 10]] * 24)
     # test this xopt
-    xopt =(1e-30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.158143376337580827, 0, 0, 0,
-            0.530902525044209539, 0, 0,0, 0, 0.310999974151577319,
+    xopt = (1e-30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.158143376337580827, 0, 0, 0,
+            0.530902525044209539, 0, 0, 0, 0, 0.310999974151577319,
             5.41244666317833561e-05, 0)
     fmin = None
 
@@ -728,7 +738,7 @@ class G20(ConstrainedTestProblem):
                   64.517, 49.4, 49.1])
     e = np.array([0.1, 0.3, 0.4, 0.3, 0.6, 0.3])
     k = 0.7302 * 530 * 14.7 * 40
-    
+
     @classmethod
     def f(cls, x):
         x = np.asarray(x)
@@ -738,7 +748,7 @@ class G20(ConstrainedTestProblem):
     def g(cls, x):
         x = np.asarray(x)
         g_vec = (x[:3] + x[12:15]) / (sum(x) + cls.e[:3])
-        g_vec = np.append(g_vec, (x[3:6] + x[15:18]) / (sum(x) +cls.e[3:6]))
+        g_vec = np.append(g_vec, (x[3:6] + x[15:18]) / (sum(x) + cls.e[3:6]))
         tmp1 = sum(x[12:] / cls.b[12:])
         tmp2 = 40 * sum(x[:12] / cls.b[:12])
         g_vec = np.append(g_vec, x[12:] / (tmp1 * cls.b[12:])
@@ -747,21 +757,22 @@ class G20(ConstrainedTestProblem):
         g_vec = np.append(g_vec, sum(x[:12] / cls.d)
                           + cls.k * sum(x[12:] / cls.b[12:]) - 1.671)
         return g_vec
-    
+
+
 class G21(ConstrainedTestProblem):
-    
+
     dim = 7
     is_ineq = [True] + [False] * 5
-    bounds = np.asarray([[0, 1000]] + [[0, 40]] * 2 + [[100, 300]] 
+    bounds = np.asarray([[0, 1000]] + [[0, 40]] * 2 + [[100, 300]]
                         + [[6.3, 6.7]] + [[5.9, 6.4]] + [[4.5, 6.25]]).T
     xopt = (193.724510070034967, 0, 17.3191887294084914, 100.047897801386839,
-             6.68445185362377892, 5.99168428444264833, 6.21451648886070451)
+            6.68445185362377892, 5.99168428444264833, 6.21451648886070451)
     fmin = 193.724510070035
-    
+
     @staticmethod
     def f(x):
         return x[0]
-    
+
     @staticmethod
     def g(x):
         x = np.asarray(x)
@@ -778,7 +789,7 @@ class G21(ConstrainedTestProblem):
 
 
 class G22(ConstrainedTestProblem):
-    
+
     dim = 22
     is_ineq = [True] + [False] * 19
     bounds = np.asarray([[0, 2e4]] + [[0, 1e6]] * 3 + [[0, 4e7]] * 3
@@ -786,17 +797,17 @@ class G22(ConstrainedTestProblem):
                         + [[100, 400]] + [[100, 600]] + [[0, 500]] * 3
                         + [[0.01, 300]] + [[0.01, 400]] + [[-4.7, 6.25]] * 5).T
     xopt = (236.430975504001054, 135.82847151732463, 204.818152544824585, 6446.54654059436416,
-             3007540.83940215595, 4074188.65771341929, 32918270.5028952882, 130.075408394314167,
-             170.817294970528621, 299.924591605478554, 399.258113423595205, 330.817294971142758,
-             184.51831230897065, 248.64670239647424, 127.658546694545862, 269.182627528746707,
-             160.000016724090955, 5.29788288102680571, 5.13529735903945728, 5.59531526444068827,
-             5.43444479314453499, 5.07517453535834395)
+            3007540.83940215595, 4074188.65771341929, 32918270.5028952882, 130.075408394314167,
+            170.817294970528621, 299.924591605478554, 399.258113423595205, 330.817294971142758,
+            184.51831230897065, 248.64670239647424, 127.658546694545862, 269.182627528746707,
+            160.000016724090955, 5.29788288102680571, 5.13529735903945728, 5.59531526444068827,
+            5.43444479314453499, 5.07517453535834395)
     fmin = 236.430975504001
-    
+
     @staticmethod
     def f(x):
         return x[0]
-    
+
     @staticmethod
     def g(x):
         x = np.asarray(x)
@@ -804,7 +815,7 @@ class G22(ConstrainedTestProblem):
         g_.append(-x[0] + 35 * sum(x[1:3]**0.6))
         g_.append(x[4] - 1e5 * x[7 + 1e7])
         g_.append(x[5] + 1e5 * x[7] - 1e5 * x[8])
-        g_.append(x[6] + 1e5 * x[8] -5e7)
+        g_.append(x[6] + 1e5 * x[8] - 5e7)
         g_.append(x[4] + 1e5 * x[9] - 3.3e7)
         g_.append(x[5] + 1e5 * x[10] - 4.4e7)
         g_.append(x[6] + 1e5 * x[11] - 6.6e7)
@@ -819,22 +830,22 @@ class G22(ConstrainedTestProblem):
         g_.append(-x[20] + np.log(-x[8] + 400))
         g_.append(-x[21] + np.log(x[16]))
         g_.append(-x[7] - x[9] + x[12] * x[17] - x[12] * x[18] + 400)
-        g_.append(x[7] - x[8] - x[10] + x[13] * (x[19] - x[20]) +400)
+        g_.append(x[7] - x[8] - x[10] + x[13] * (x[19] - x[20]) + 400)
         g_.append(x[8] - x[11] + (-4.60517 + x[21]) * x[14] + 100)
         return np.asarray(g_)
 
 
 class G23(ConstrainedTestProblem):
-    
+
     dim = 9
-    is_ineq = [True] * 2+ [False] * 4
-    bounds = np.asarray([[0, 1000]] + [[0, 40]] * 2 + [[100, 300]] 
+    is_ineq = [True] * 2 + [False] * 4
+    bounds = np.asarray([[0, 1000]] + [[0, 40]] * 2 + [[100, 300]]
                         + [[6.3, 6.7]] + [[5.9, 6.4]] + [[4.5, 6.25]]).T
     xopt = (0.00510000000000259465, 99.9947000000000514,
-            9.01920162996045897e-18, 99.9999000000000535, 0.000100000000027086086, 
+            9.01920162996045897e-18, 99.9999000000000535, 0.000100000000027086086,
             2.75700683389584542e-14, 99.9999999999999574, 2000.0100000100000100008)
     fmin = -400.055099999999584
-    
+
     @staticmethod
     def f(x):
         v = -9 * x[4]
@@ -843,7 +854,7 @@ class G23(ConstrainedTestProblem):
         v += 16 * x[1]
         v += 10 * (x[5] + x[6])
         return v
-    
+
     @staticmethod
     def g(x):
         x = np.asarray(x)
@@ -862,17 +873,17 @@ class G24(ConstrainedTestProblem):
     This problem has a feasible
     region consisting on two disconnected sub-regions
     """
-    
+
     dim = 2
     is_ineq = [True] * 2
     bounds = np.asarray([[0, 3], [0, 4]]).T
     xopt = (2.32952019747762, 3.17849307411774)
     fmin = -5.50801327159536
-    
+
     @staticmethod
     def f(x):
         return - x[0] - x[1]
-    
+
     @staticmethod
     def g(x):
         x = np.asarray(x)
@@ -893,6 +904,7 @@ class PB240(ConstrainedTestProblem):
     is_ineq = [True]
     bounds = np.asarray([[0, np.inf]] * 5).T
     dim = 5
+    xopt = (5000, 0, 0, 0, 0)
     fmin = -5000
     x_start = [250] * 5
 
@@ -907,6 +919,7 @@ class PB240(ConstrainedTestProblem):
     def g_bounds(self, x):
         return - np.asarray(x)
 
+
 class PB241(ConstrainedTestProblem):
     """
     >>> PB241.f(PB241.x_start)
@@ -916,6 +929,7 @@ class PB241(ConstrainedTestProblem):
     is_ineq = [True]
     bounds = np.asarray([[0, np.inf]] * 5).T
     dim = 5
+    xopt = (0, 0, 0, 0, 5e4/14)
     fmin = -125000/7
     x_start = [250] * 5
 
@@ -926,19 +940,19 @@ class PB241(ConstrainedTestProblem):
     @staticmethod
     def g(x):
         return np.asarray([sum(np.multiply(9 + np.arange(1, len(x)+1), x)) - 50000])
-    
+
     def g_bounds(self, x):
         return - np.asarray(x)
 
 
 class TR2(ConstrainedTestProblem):
-    
+
     is_ineq = [True]
     bounds = None
     dim = 2
     fmin = 2
     x_start = [50] * 2
-    
+
     @staticmethod
     def f(x):
         x = np.asarray(x)
@@ -950,10 +964,10 @@ class TR2(ConstrainedTestProblem):
 
 
 arnold2012 = {
-    "HB": {"obj": G4}, 
+    "HB": {"obj": G4},
     "G6": {"obj": G6},
-    "G7": {"obj": G7}, 
-    "G9": {"obj": G9}, 
+    "G7": {"obj": G7},
+    "G9": {"obj": G9},
     "G10": {"obj": G10},
     "2.40": {"obj": PB240},
     "2.41": {"obj": PB241},
@@ -1011,20 +1025,20 @@ class TranslatedFunction:
         self.coord = coord
 
     def __call__(self, x):
-        y = np.array(x) # NB: array not asarray here to copy
+        y = np.array(x)  # NB: array not asarray here to copy
         y[self.coord] -= 1
         return self.func(y)
 
 
 class LinConsQP(ConstrainedTestProblem):
     """
-    Quadratic problem with a linear constraints. 
+    Quadratic problem with a linear constraints.
     Can also implement a non linear constraint equivalent to x < 0
     For research purpose
     >>> problem = LinConsQP()
     >>> problem(np.zeros(10))
     (1.0, array([0.]))
-    
+
     We can change m on the fly:
     >>> problem.m = 3; problem(np.zeros(10))
     (3.0, array([0., 0., 0.]))
@@ -1090,7 +1104,7 @@ class LinConsQP(ConstrainedTestProblem):
     @property
     def coord(self):
         return np.arange(self.m)
-    
+
     def f(self, x):
         y = np.array(x)
         y[self.coord] -= 1
@@ -1098,6 +1112,7 @@ class LinConsQP(ConstrainedTestProblem):
 
     def g(self, x):
         return np.asarray(self._g(x), dtype=float)
+
 
 class NoisyLinConsQP(LinConsQP):
 
@@ -1119,7 +1134,7 @@ class NoisyLinConsQP(LinConsQP):
     def g(self, x):
         g_ = super().g(x)
         if self.sigma_g:
-            #print(g_)
+            # print(g_)
             g_ += np.random.normal(0, self.sigma_g)
         return g_
 
@@ -1127,4 +1142,3 @@ class NoisyLinConsQP(LinConsQP):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-
