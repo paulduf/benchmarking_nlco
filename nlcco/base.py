@@ -37,15 +37,15 @@ class ConstrainedTestProblem:
     @property
     def is_ineq(self):
         raise NotImplementedError
-    
+
     @property
     def dim(self):
         raise NotImplementedError
-    
+
     @property
     def m(self):
         return len(self.is_ineq)
-    
+
     @property
     def bounds(self):
         return None

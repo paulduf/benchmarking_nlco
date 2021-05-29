@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="nlcco",
-    version="0.0.1",
+    version="0.0.2",
     author="Paul Dufossé",
     author_email="paul.dufosse@inria.fr",
     description="Benchmark Problems for Non Linear Constrained Optimization",
