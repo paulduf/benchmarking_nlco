@@ -966,6 +966,15 @@ class TR2(ConstrainedTestProblem):
     def g(x):
         return [len(x) - sum(x)]
 
+    @staticmethod
+    def grad_f(x):
+        x = np.asarray(x)
+        return 2 * x
+
+    @staticmethod
+    def grad_g(x):
+        return [- np.ones(len(x))]
+
 
 arnold2012 = {
     "HB": {"obj": G4},

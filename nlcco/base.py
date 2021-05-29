@@ -35,6 +35,12 @@ class ConstrainedTestProblem:
     def g(self, x):
         raise NotImplementedError
 
+    def grad_f(self, x):
+        raise NotImplementedError
+
+    def grad_g(self, x):
+        raise NotImplementedError
+
     @property
     def is_ineq(self):
         raise NotImplementedError
