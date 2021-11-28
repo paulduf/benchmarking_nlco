@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="nlcco",
-    version="0.0.2",
+    version="0.0.3",
     author="Paul Dufossé",
     author_email="paul.dufosse@inria.fr",
     description="Benchmark Problems for Non Linear Constrained Optimization",
@@ -18,6 +18,6 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    requires=["numpy", "matplotlib"],
+    requires=["numpy", "matplotlib", "codetiming"],
     python_requires='>=3.6',
 )

@@ -8,8 +8,40 @@ Created on Tue Apr 28 16:08:44 2020
 TODO:
     - better handle of bounds for only lower or upper
 """
-import os, sys
 import numpy as np
+from functools import wraps
+
+
+class SwitchDecorator:
+    """
+    Parse the first argument of the decorator
+    So it can be used in or outside a class
+    """
+
+    def __init__(self, in_class):
+        assert isinstance(in_class, bool)
+        self.in_class = int(in_class)
+
+
+class Arrayize(SwitchDecorator):
+    def __call__(self, func):
+        def wrapper(*args, **kwargs):
+            args = list(args)
+            x = args[self.in_class]
+            args[self.in_class] = np.asarray(x)
+            return func(*args, **kwargs)
+        return wrapper
+
+
+def realfunction(func):
+    """
+    Sanitize output of multivariate function as np.float64
+    """
+    @wraps(func)  # to propagate __name__
+    def wrapper(*args, **kwargs):
+        f = func(*args, **kwargs)
+        return np.float64(f)
+    return wrapper
 
 
 class ConstrainedTestProblem:
@@ -35,10 +67,10 @@ class ConstrainedTestProblem:
     def g(self, x):
         raise NotImplementedError
 
-    def grad_f(self, x):
+    def Df(self, x):
         raise NotImplementedError
 
-    def grad_g(self, x):
+    def Dg(self, x):
         raise NotImplementedError
 
     @property

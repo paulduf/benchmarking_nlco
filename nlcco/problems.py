@@ -20,7 +20,7 @@ TODOs:
 Warning:
     - dimension 1 not tested
 """
-from .base import ConstrainedTestProblem
+from .base import ConstrainedTestProblem, Arrayize, realfunction
 import numpy as np
 
 
@@ -967,12 +967,12 @@ class TR2(ConstrainedTestProblem):
         return [len(x) - sum(x)]
 
     @staticmethod
-    def grad_f(x):
+    def Df(x):
         x = np.asarray(x)
         return 2 * x
 
     @staticmethod
-    def grad_g(x):
+    def Dg(x):
         return [- np.ones(len(x))]
 
 
@@ -1012,7 +1012,7 @@ cec2006 = {
     "G22": G22,
     "G23": G23,
     "G24": G24,
-    }
+}
 
 # Constructor for artificial test problems
 
@@ -1043,6 +1043,60 @@ class TranslatedFunction:
         return self.func(y)
 
 
+class Arnold2017(ConstrainedTestProblem):
+    """
+    Test problem from paper:
+
+        > Reconsidering Constraint Release for Active-Set Evolution Strategies,
+        > Dirk V. Arnold, 2017
+
+    Objective is the sphere and is also static
+    >>> Arnold2017.f([1] * 3)
+    3.0
+    """
+
+    is_ineq = None
+    dim = None
+
+    def __init__(self, seed=1, eps_feas=0, dim=10, m=5):
+        assert m <= dim
+        super().__init__(seed, eps_feas)
+        self.dim = dim
+        self.is_ineq = [True] * m
+
+    @staticmethod
+    @Arrayize(False)
+    @realfunction
+    def f(x):
+        return x @ x
+
+    @Arrayize(True)
+    def g(self, x):
+        return np.concatenate(([100 * x[0] - 1], x[1:self.m] + 1))
+
+    @staticmethod
+    @Arrayize(False)
+    def Df(x):
+        return 2 * x
+
+    @Arrayize(True)
+    def Dg(self, x):
+        J = np.zeros((self.dim, self.m))
+        J[0, 0] = 100
+        J[1:self.m, 1:self.m] = np.eye(self.m - 1)
+        return J
+
+    @property
+    def xopt(self):
+        _x_opt = np.zeros(self.dim, dtype=np.float64)
+        _x_opt[1:self.m] = 1
+        return self._x_opt
+
+    @property
+    def fmin(self):
+        return self.m - 1
+
+
 class LinConsQP(ConstrainedTestProblem):
     """
     Quadratic problem with a linear constraints.
@@ -1061,7 +1115,8 @@ class LinConsQP(ConstrainedTestProblem):
     dim = None
     m = None
 
-    def __init__(self, seed=1, eps_feas=0, dim=10, m=1, obj="sphere", cons="lin"):
+    def __init__(self, seed=1, eps_feas=0, dim=10, m=1,
+                 obj="sphere", cons="lin"):
         """
         Instantiate a linearly constrained quadratic problem
 
