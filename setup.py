@@ -18,6 +18,6 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    requires=["numpy", "matplotlib", "codetiming"],
+    requires=["numpy", "scipy", "matplotlib", "codetiming"],
     python_requires='>=3.6',
 )

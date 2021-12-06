@@ -37,13 +37,35 @@ class G1(ConstrainedTestProblem):
     xopt = [1] * 9 + [3] * 3 + [1]
     fmin = -15
 
-    @staticmethod
-    def f(x):
+    A = np.array([
+        [2, 2, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+        [2, 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0],
+        [0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0],
+        [-8, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        [0, -8, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        [0, 0, -8, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+        [0, 0, 0, -2, -1, 0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, -2, -1, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, -2, -1, 0, 0, 1, 0],
+    ])
+    b = np.zeros(9)
+    b[0:3] = -10
+    # C (in the objective is sparse so not implemented)
+    d = np.array([5] * 4 + [-1] * 9)
+
+    @classmethod
+    def f(cls, x):
         x = np.asarray(x)
-        return 5 * sum(x[0:3]) - 5 * sum(x[0:3]**2) - sum(x[4:])
+        return 5 * sum(x[0:4]) - 5 * sum(x[0:4]**2) - sum(x[4:])
+
+    @classmethod
+    @Arrayize(True)
+    def g(cls, x):
+        return cls.A.dot(x) + cls.b
 
     @staticmethod
-    def g(x):
+    def _g_old(x):
+        # todo: compare implementations
         g_ = []
         g_.append(2 * x[0] + 2 * x[1] + x[9] + x[10] - 10)
         g_.append(2 * x[0] + 2 * x[2] + x[9] + x[11] - 10)
@@ -55,6 +77,18 @@ class G1(ConstrainedTestProblem):
         g_.append(-2 * x[5] - x[6] + x[10])
         g_.append(-2 * x[7] - x[8] + x[11])
         return np.asarray(g_)
+
+    @classmethod
+    @Arrayize(True)
+    def Df(cls, x):
+        Df_ = np.zeros(cls.dim)
+        Df_[0:4] = -10 * x[0:4]
+        Df_ += cls.d
+        return Df_
+
+    @classmethod
+    def Dg(cls, x):
+        return cls.A
 
 
 class G2(ConstrainedTestProblem):
@@ -1095,6 +1129,37 @@ class Arnold2017(ConstrainedTestProblem):
     @property
     def fmin(self):
         return self.m - 1
+
+
+class RandomSphere(ConstrainedTestProblem):
+    """
+    Random Sphere Functions is a class of problems described in the paper
+
+        > Reconsidering Constraint Release for Active-Set Evolution Strategies,
+        > Dirk V. Arnold, 2017
+
+    and consists of a sphere objective and a set of randomly generated
+    linear constraints, in matrix form Ax + b <= 0
+    where each row of A is a realization of a spherical distribution times
+    a normally distributed scalar, and b is also normally distributed,
+    such that the distance of the constraint plane from the origin is
+    Cauchy-distributed (TODO: proof os this)
+    """
+
+    is_ineq = None
+    dim = None
+
+    def __init__(self, seed=1, eps_feas=0, dim=10, m=5):
+        assert m <= dim
+        super().__init__(seed, eps_feas)
+        self.dim = dim
+        self.is_ineq = [True] * m
+        # TODO
+
+    @property
+    def active_set(self):
+        # TODO
+        raise NotImplementedError
 
 
 class LinConsQP(ConstrainedTestProblem):

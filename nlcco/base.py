@@ -89,39 +89,30 @@ class ConstrainedTestProblem:
     def bounds(self):
         return None
 
-    def __call__(self, x, add_bounds=False,):
-        f_ = self.f(x)
+    def constraint(self, x):
+        # Shortcut to call self.g and self.g_bounds
         g_ = self.g(x)
         g_ += self.eps_feas * np.asarray(self.is_ineq)  # converts to np.array
-        if add_bounds:
-            g_b_ = self.g_bounds(x) + self.eps_feas
-            g_ = np.concatenate((g_, g_b_))
-        return f_, g_
+        g_b_ = self.g_bounds(x) + self.eps_feas
+        return np.concatenate((g_, g_b_))
 
-    def sample_x_start(self):
-        """
-        Sample x_start from uniform distribution in the bounds
-        """
-        if self.dim is None:
-            raise
-        np.random.seed(self.seed)
-        self.x_start = np.zeros(self.dim)
-        if self.bounds[0] is not None:
-            self.x_start = self.bounds[0] + np.random.uniform(size=self.dim) * (self.bounds[1] - self.bounds[0])
-        # check if upper bound was infty and correct
-        for i in range(self.dim):
-            xi = self.x_start[i]
-            if xi == np.inf:
-                xi = self.bounds[0][i] + 10
-        return self.x_start
+    def __call__(self, x, add_bounds=False,):
+        f_ = self.f(x)
+
+        if add_bounds:
+            g_ = self.constraint(x)
+        else:
+            g_ = self.g(x)
+            g_ += self.eps_feas * np.asarray(self.is_ineq)
+        return f_, g_
 
     def g_bounds(self, x):
         """
-        returns bound constraints violation in the form of twice as much inequality constraints
+        returns bound constraints violation
+        in the form of twice as much inequality constraints
         """
-        #todo: current version is simple but we may think about desirable behaviour when one bound is np.inf or None
         if self.bounds is None:
-            raise
+            raise RuntimeError("Asking for bounds that does not exist")
         return np.concatenate((self.bounds[0] - x, x - self.bounds[1]))
 
 

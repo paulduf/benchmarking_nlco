@@ -1,6 +1,8 @@
 # benchmarking_nlco
 Benchmarking Nonlinear Constrained Optimization algorithms
 
+**This is work in progress**
+
 ## Description
 
 There are two types of problems: fixed problems and scalable ones. A concrete problem inherites from the base classe `base.ConstrainedTestProblem`.
@@ -11,4 +13,9 @@ A scalable problem needs instantiation with dimension and number of constraints.
 
 ## TODOs
 
-Add the decorators `arrayize` and `realfunction` everywhere.
+- Add the decorators `arrayize` and `realfunction` everywhere.
+- Implement the gradient everywhere it is possible
+
+## Install
+
+Just do `pip install .` in this repository, everything relies on `numpy` and `scipy.optimize` if you want to run experiments.

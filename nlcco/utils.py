@@ -3,10 +3,15 @@ from matplotlib import pyplot as plt
 import numpy as np
 
 
-def transpose_list(l):
-    if isinstance(l[0], list):
-        return list(map(list, zip(*l)))
-    return l
+def transpose_list(lst):
+    """
+    From list of lists (of same length) lst
+    Returns transposed list lst2
+    where lst[i][j] = lst2[j][i]
+    """
+    if isinstance(lst[0], list):
+        return list(map(list, zip(*lst)))
+    return lst
 
 
 def add_data_to_json(x, f, problem_name, filename):
